@@ -1,0 +1,42 @@
+Connor Phillips
+STA 445
+
+f. Create a new directory in your package called docs/. In that directory create a RMarkdown file that
+loads your package and uses the weather data to make a few graphs of weather phenomena over time.
+
+Packages:
+```{r, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+
+
+```{r}
+yearAggs = Flagstaff_Weather %>%
+  mutate(stnYear = year(DATE)) %>%
+  group_by(stnYear) %>%
+  summarise(
+    yr_prcp.sum = sum(PRCP, na.rm = TRUE),
+    yr_snow.sum = sum(SNOW, na.rm = TRUE),
+    yr_tmax.highest = max(TMAX, na.rm = TRUE),
+    yr_tmin.avg = mean(TMIN, na.rm = TRUE)
+    ) 
+
+
+ggplot(yearAggs, aes(x=stnYear, y=yr_prcp.sum)) +
+  geom_line() +
+  labs(title = "Annual Precipitation by Year - Pulliam Airport") +
+  labs( x="Year", y="Precipitation - Inches" )      
+```
+```{r}
+ggplot(yearAggs, aes(x=stnYear, y=yr_tmax.highest)) +
+  geom_line() +
+  labs(title = "Highest Daily Temp each Year - Pulliam Airport") +
+  labs( x="Year", y="Temperature (F)" )  
+```
+```{r}
+ggplot(yearAggs, aes(y=yr_snow.sum, x=stnYear)) +
+  geom_point() +
+  labs(title = "Annual Snowfall - Pulliam Airport") +
+  labs( x="Year", y="Snow (in)" )  
+```
